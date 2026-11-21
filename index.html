@@ -20,9 +20,6 @@
           <h1>Geldzähler</h1>
         </div>
         <div class="header-actions">
-          <button id="summaryBtn" class="icon-btn" title="Gesamtübersicht">
-            📊 <span class="btn-label">Übersicht</span>
-          </button>
           <button id="resetPileBtn" class="icon-btn danger-icon" title="Aktuellen Stapel leeren">
             🔄 <span class="btn-label">Leeren</span>
           </button>
@@ -56,22 +53,42 @@
     <!-- Main Denomination Counter List -->
     <main class="content-area">
       <!-- Banknotes Section -->
-      <section class="denom-section">
-        <div class="section-header">
-          <h2>Banknoten / Scheine</h2>
+      <section class="denom-section" id="section-bills" data-category="bills">
+        <button class="section-header collapsable-header" data-toggle="bills" type="button" aria-expanded="true">
+          <div class="header-title-wrap">
+            <span class="collapse-icon">▼</span>
+            <h2>Banknoten / Scheine</h2>
+          </div>
           <span class="section-subtotal" id="billsSubtotal">0,00 €</span>
-        </div>
+        </button>
         <div class="denom-grid" id="billsGrid">
           <!-- Populated by JS -->
         </div>
       </section>
 
-      <!-- Coins Section -->
-      <section class="denom-section">
-        <div class="section-header">
-          <h2>Münzen (ab 10 Cent)</h2>
-          <span class="section-subtotal" id="coinsSubtotal">0,00 €</span>
+      <!-- Coin Rolls Section -->
+      <section class="denom-section" id="section-rolls" data-category="rolls">
+        <button class="section-header collapsable-header" data-toggle="rolls" type="button" aria-expanded="true">
+          <div class="header-title-wrap">
+            <span class="collapse-icon">▼</span>
+            <h2>Münzrollen</h2>
+          </div>
+          <span class="section-subtotal" id="rollsSubtotal">0,00 €</span>
+        </button>
+        <div class="denom-grid" id="rollsGrid">
+          <!-- Populated by JS -->
         </div>
+      </section>
+
+      <!-- Coins Section -->
+      <section class="denom-section" id="section-coins" data-category="coins">
+        <button class="section-header collapsable-header" data-toggle="coins" type="button" aria-expanded="true">
+          <div class="header-title-wrap">
+            <span class="collapse-icon">▼</span>
+            <h2>Münzen (ab 10 Cent)</h2>
+          </div>
+          <span class="section-subtotal" id="coinsSubtotal">0,00 €</span>
+        </button>
         <div class="denom-grid" id="coinsGrid">
           <!-- Populated by JS -->
         </div>

@@ -1,27 +1,32 @@
 /**
  * Cash Counter (Geldzähler) - Mobile-First Multi-Pile Currency Calculator
- * Optimized for Euro bills (500€ down to 5€) and coins (2€ down to 10 Cent).
+ * Denominations: Euro bills (200€ to 5€), coin rolls (2€, 1€, 50ct), and loose coins (2€ down to 10ct).
  */
 
 // Denominations configuration
 const DENOMINATIONS = [
-  // Banknotes
-  { id: 'b500', type: 'bill', value: 500.0, label: '500 €', sublabel: 'Schein', color: 'var(--denom-500)' },
-  { id: 'b200', type: 'bill', value: 200.0, label: '200 €', sublabel: 'Schein', color: 'var(--denom-200)' },
-  { id: 'b100', type: 'bill', value: 100.0, label: '100 €', sublabel: 'Schein', color: 'var(--denom-100)' },
-  { id: 'b50',  type: 'bill', value: 50.0,  label: '50 €',  sublabel: 'Schein', color: 'var(--denom-50)' },
-  { id: 'b20',  type: 'bill', value: 20.0,  label: '20 €',  sublabel: 'Schein', color: 'var(--denom-20)' },
-  { id: 'b10',  type: 'bill', value: 10.0,  label: '10 €',  sublabel: 'Schein', color: 'var(--denom-10)' },
-  { id: 'b5',   type: 'bill', value: 5.0,   label: '5 €',   sublabel: 'Schein', color: 'var(--denom-5)' },
-  // Coins (down to 10 cents)
-  { id: 'c200', type: 'coin', value: 2.0,   label: '2 €',   sublabel: 'Münze',  color: 'var(--coin-bicolor)' },
-  { id: 'c100', type: 'coin', value: 1.0,   label: '1 €',   sublabel: 'Münze',  color: 'var(--coin-bicolor)' },
-  { id: 'c50',  type: 'coin', value: 0.50,  label: '50 ct', sublabel: 'Münze',  color: 'var(--coin-gold)' },
-  { id: 'c20',  type: 'coin', value: 0.20,  label: '20 ct', sublabel: 'Münze',  color: 'var(--coin-gold)' },
-  { id: 'c10',  type: 'coin', value: 0.10,  label: '10 ct', sublabel: 'Münze',  color: 'var(--coin-gold)' }
+  // Banknotes (500€ removed)
+  { id: 'b200', type: 'bill', category: 'bills', value: 200.0, label: '200 €', sublabel: 'Schein', color: 'var(--denom-200)' },
+  { id: 'b100', type: 'bill', category: 'bills', value: 100.0, label: '100 €', sublabel: 'Schein', color: 'var(--denom-100)' },
+  { id: 'b50',  type: 'bill', category: 'bills', value: 50.0,  label: '50 €',  sublabel: 'Schein', color: 'var(--denom-50)' },
+  { id: 'b20',  type: 'bill', category: 'bills', value: 20.0,  label: '20 €',  sublabel: 'Schein', color: 'var(--denom-20)' },
+  { id: 'b10',  type: 'bill', category: 'bills', value: 10.0,  label: '10 €',  sublabel: 'Schein', color: 'var(--denom-10)' },
+  { id: 'b5',   type: 'bill', category: 'bills', value: 5.0,   label: '5 €',   sublabel: 'Schein', color: 'var(--denom-5)' },
+  
+  // Coin Rolls: 1x2€ roll = 50€ (25 coins), 1x1€ roll = 25€ (25 coins), 1x50ct roll = 20€ (40 coins)
+  { id: 'r200', type: 'roll', category: 'rolls', value: 50.0,  label: '2 € Rolle',  sublabel: 'Wert: 50 € (25 Stk)',  color: 'var(--coin-bicolor)' },
+  { id: 'r100', type: 'roll', category: 'rolls', value: 25.0,  label: '1 € Rolle',  sublabel: 'Wert: 25 € (25 Stk)',  color: 'var(--coin-bicolor)' },
+  { id: 'r50',  type: 'roll', category: 'rolls', value: 20.0,  label: '50 ct Rolle', sublabel: 'Wert: 20 € (40 Stk)', color: 'var(--coin-gold)' },
+
+  // Loose Coins (down to 10 cents)
+  { id: 'c200', type: 'coin', category: 'coins', value: 2.0,   label: '2 €',   sublabel: 'Münze',  color: 'var(--coin-bicolor)' },
+  { id: 'c100', type: 'coin', category: 'coins', value: 1.0,   label: '1 €',   sublabel: 'Münze',  color: 'var(--coin-bicolor)' },
+  { id: 'c50',  type: 'coin', category: 'coins', value: 0.50,  label: '50 ct', sublabel: 'Münze',  color: 'var(--coin-gold)' },
+  { id: 'c20',  type: 'coin', category: 'coins', value: 0.20,  label: '20 ct', sublabel: 'Münze',  color: 'var(--coin-gold)' },
+  { id: 'c10',  type: 'coin', category: 'coins', value: 0.10,  label: '10 ct', sublabel: 'Münze',  color: 'var(--coin-gold)' }
 ];
 
-const STORAGE_KEY = 'cash_counter_piles_data_v1';
+const STORAGE_KEY = 'cash_counter_piles_data_v2';
 
 // Application State
 let appState = {
@@ -30,7 +35,8 @@ let appState = {
     {
       id: 'pile-1',
       name: 'Stapel 1',
-      counts: {} // { 'b50': 4, 'c200': 12, ... }
+      counts: {}, // { 'b50': 4, 'c200': 12, ... }
+      collapsedCategories: {} // { 'bills': false, 'rolls': false, 'coins': false }
     }
   ]
 };
@@ -43,12 +49,25 @@ let modalCurrentInput = "0";
 let pendingPromptResolver = null;
 let pendingConfirmResolver = null;
 
-// Currency Formatter (German locale: 1.234,50 €)
-const currencyFormatter = new Intl.NumberFormat('de-DE', {
+// Custom Dynamic Currency Formatter:
+// Strips ',00' for exact whole-euro amounts, but preserves decimal precision for cents (e.g. 50 ct, 20 ct, 10 ct)
+const baseCurrencyFormatter = new Intl.NumberFormat('de-DE', {
   style: 'currency',
   currency: 'EUR',
-  minimumFractionDigits: 2
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
 });
+
+function formatCurrency(amount) {
+  const roundedCents = Math.round(amount * 100);
+  if (roundedCents % 100 === 0) {
+    // Exact whole euro: e.g. 50 € instead of 50,00 €
+    const wholeEuros = Math.round(amount);
+    return `${numberFormatter.format(wholeEuros)} €`;
+  }
+  // Fractional amounts (has cents): e.g. 1,50 €, 0,20 €
+  return baseCurrencyFormatter.format(amount);
+}
 
 // Format plain number
 const numberFormatter = new Intl.NumberFormat('de-DE');
@@ -60,13 +79,14 @@ function init() {
   loadFromStorage();
   renderDenominationGrids();
   renderPileTabs();
+  applyCategoryCollapseState();
   updateCalculations();
   bindEvents();
 }
 
 function loadFromStorage() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('cash_counter_piles_data_v1');
     if (raw) {
       const parsed = JSON.parse(raw);
       if (parsed.piles && parsed.piles.length > 0) {
@@ -74,6 +94,16 @@ function loadFromStorage() {
         if (!appState.piles.some(p => p.id === appState.activePileId)) {
           appState.activePileId = appState.piles[0].id;
         }
+        // Ensure collapsedCategories object exists on all piles
+        appState.piles.forEach(pile => {
+          if (!pile.collapsedCategories) {
+            pile.collapsedCategories = {};
+          }
+          // Clean up old b500 count if existing
+          if (pile.counts && pile.counts['b500']) {
+            delete pile.counts['b500'];
+          }
+        });
       }
     }
   } catch (e) {
@@ -94,8 +124,16 @@ function getActivePile() {
 }
 
 /* --------------------------------------------------------------------------
-   Custom Dialog Modals (Reliable on all browsers, webviews & mobile)
+   Modal Scroll Lock Helper
    -------------------------------------------------------------------------- */
+function checkModalScrollLock() {
+  const anyOpen = document.querySelectorAll('.modal-backdrop.open').length > 0;
+  if (anyOpen) {
+    document.body.classList.add('modal-open');
+  } else {
+    document.body.classList.remove('modal-open');
+  }
+}
 function showCustomPrompt(title, defaultValue = '') {
   return new Promise((resolve) => {
     pendingPromptResolver = resolve;
@@ -107,6 +145,7 @@ function showCustomPrompt(title, defaultValue = '') {
     inputEl.value = defaultValue;
     modal.classList.add('open');
     modal.setAttribute('aria-hidden', 'false');
+    checkModalScrollLock();
     setTimeout(() => {
       inputEl.focus();
       inputEl.select();
@@ -118,6 +157,7 @@ function closeCustomPrompt(result) {
   const modal = document.getElementById('promptModal');
   modal.classList.remove('open');
   modal.setAttribute('aria-hidden', 'true');
+  checkModalScrollLock();
   if (pendingPromptResolver) {
     pendingPromptResolver(result);
     pendingPromptResolver = null;
@@ -138,6 +178,7 @@ function showCustomConfirm(title, message, confirmBtnText = 'Bestätigen') {
 
     modal.classList.add('open');
     modal.setAttribute('aria-hidden', 'false');
+    checkModalScrollLock();
   });
 }
 
@@ -145,6 +186,7 @@ function closeCustomConfirm(result) {
   const modal = document.getElementById('confirmModal');
   modal.classList.remove('open');
   modal.setAttribute('aria-hidden', 'true');
+  checkModalScrollLock();
   if (pendingConfirmResolver) {
     pendingConfirmResolver(result);
     pendingConfirmResolver = null;
@@ -152,13 +194,49 @@ function closeCustomConfirm(result) {
 }
 
 /* --------------------------------------------------------------------------
+   Category Collapse / Expand Management
+   -------------------------------------------------------------------------- */
+function toggleCategory(category) {
+  const pile = getActivePile();
+  if (!pile.collapsedCategories) pile.collapsedCategories = {};
+  
+  pile.collapsedCategories[category] = !pile.collapsedCategories[category];
+  applyCategoryCollapseState();
+  saveToStorage();
+}
+
+function applyCategoryCollapseState() {
+  const pile = getActivePile();
+  const collapsed = pile.collapsedCategories || {};
+
+  ['bills', 'rolls', 'coins'].forEach(cat => {
+    const section = document.getElementById(`section-${cat}`);
+    const headerBtn = section ? section.querySelector('.collapsable-header') : null;
+    const isCollapsed = !!collapsed[cat];
+
+    if (section) {
+      if (isCollapsed) {
+        section.classList.add('collapsed');
+      } else {
+        section.classList.remove('collapsed');
+      }
+    }
+    if (headerBtn) {
+      headerBtn.setAttribute('aria-expanded', isCollapsed ? 'false' : 'true');
+    }
+  });
+}
+
+/* --------------------------------------------------------------------------
    DOM Rendering
    -------------------------------------------------------------------------- */
 function renderDenominationGrids() {
   const billsContainer = document.getElementById('billsGrid');
+  const rollsContainer = document.getElementById('rollsGrid');
   const coinsContainer = document.getElementById('coinsGrid');
 
   billsContainer.innerHTML = '';
+  rollsContainer.innerHTML = '';
   coinsContainer.innerHTML = '';
 
   DENOMINATIONS.forEach((denom, index) => {
@@ -183,8 +261,10 @@ function renderDenominationGrids() {
       </div>
     `;
 
-    if (denom.type === 'bill') {
+    if (denom.category === 'bills') {
       billsContainer.appendChild(rowEl);
+    } else if (denom.category === 'rolls') {
+      rollsContainer.appendChild(rowEl);
     } else {
       coinsContainer.appendChild(rowEl);
     }
@@ -204,7 +284,7 @@ function renderPileTabs() {
 
     tabEl.innerHTML = `
       <span class="tab-title">${escapeHtml(pile.name)}</span>
-      <span class="tab-badge">${currencyFormatter.format(total)}</span>
+      <span class="tab-badge">${formatCurrency(total)}</span>
       ${appState.piles.length > 1 ? `<span class="tab-close" data-remove="${pile.id}" title="Stapel löschen">&times;</span>` : ''}
     `;
 
@@ -237,6 +317,7 @@ function updateCalculations() {
   const currentPile = getActivePile();
   let currentPileSum = 0;
   let billsSubtotal = 0;
+  let rollsSubtotal = 0;
   let coinsSubtotal = 0;
 
   // Update each denomination row
@@ -245,7 +326,8 @@ function updateCalculations() {
     const lineTotal = count * denom.value;
     currentPileSum += lineTotal;
 
-    if (denom.type === 'bill') billsSubtotal += lineTotal;
+    if (denom.category === 'bills') billsSubtotal += lineTotal;
+    else if (denom.category === 'rolls') rollsSubtotal += lineTotal;
     else coinsSubtotal += lineTotal;
 
     // Update row DOM
@@ -255,7 +337,7 @@ function updateCalculations() {
     const rowEl = document.getElementById(`row-${denom.id}`);
 
     if (countBtn) countBtn.textContent = numberFormatter.format(count);
-    if (sumEl) sumEl.textContent = currencyFormatter.format(lineTotal);
+    if (sumEl) sumEl.textContent = formatCurrency(lineTotal);
     if (multEl) multEl.textContent = `${count} × ${denom.label}`;
 
     if (rowEl) {
@@ -271,13 +353,14 @@ function updateCalculations() {
   });
 
   // Update headers and footers
-  document.getElementById('billsSubtotal').textContent = currencyFormatter.format(billsSubtotal);
-  document.getElementById('coinsSubtotal').textContent = currencyFormatter.format(coinsSubtotal);
-  document.getElementById('currentPileTotal').textContent = currencyFormatter.format(currentPileSum);
-  document.getElementById('grandTotal').textContent = currencyFormatter.format(grandTotal);
+  document.getElementById('billsSubtotal').textContent = formatCurrency(billsSubtotal);
+  document.getElementById('rollsSubtotal').textContent = formatCurrency(rollsSubtotal);
+  document.getElementById('coinsSubtotal').textContent = formatCurrency(coinsSubtotal);
+  document.getElementById('currentPileTotal').textContent = formatCurrency(currentPileSum);
+  document.getElementById('grandTotal').textContent = formatCurrency(grandTotal);
 
   document.getElementById('footerPileName').textContent = currentPile.name;
-  document.getElementById('footerPileTotal').textContent = currencyFormatter.format(currentPileSum);
+  document.getElementById('footerPileTotal').textContent = formatCurrency(currentPileSum);
 
   // Update active state in tabs & badges
   updateTabBadges();
@@ -297,7 +380,7 @@ function updateTabBadges() {
       }
       const badge = tab.querySelector('.tab-badge');
       if (badge) {
-        badge.textContent = currencyFormatter.format(calculatePileTotal(pile));
+        badge.textContent = formatCurrency(calculatePileTotal(pile));
       }
     }
   });
@@ -310,6 +393,7 @@ function switchPile(pileId) {
   if (appState.activePileId === pileId) return;
   appState.activePileId = pileId;
   renderPileTabs();
+  applyCategoryCollapseState(); // Apply the newly selected pile's collapse state
   updateCalculations();
 }
 
@@ -322,11 +406,13 @@ async function addNewPile() {
   appState.piles.push({
     id: newId,
     name: newName.trim(),
-    counts: {}
+    counts: {},
+    collapsedCategories: {}
   });
 
   appState.activePileId = newId;
   renderPileTabs();
+  applyCategoryCollapseState();
   updateCalculations();
 
   // Scroll new tab into view
@@ -352,6 +438,7 @@ async function deletePile(pileId) {
     appState.activePileId = appState.piles[0].id;
   }
   renderPileTabs();
+  applyCategoryCollapseState();
   updateCalculations();
   showToast(`"${pile.name}" gelöscht`);
 }
@@ -385,6 +472,7 @@ function openNumpadModal(denomIndex) {
   const modal = document.getElementById('inputModal');
   modal.classList.add('open');
   modal.setAttribute('aria-hidden', 'false');
+  checkModalScrollLock();
 }
 
 function closeNumpadModal() {
@@ -392,16 +480,17 @@ function closeNumpadModal() {
   const modal = document.getElementById('inputModal');
   modal.classList.remove('open');
   modal.setAttribute('aria-hidden', 'true');
+  checkModalScrollLock();
 }
 
 function updateModalUI() {
   const denom = DENOMINATIONS[activeModalDenomIndex];
   document.getElementById('modalDenomBadge').textContent = denom.label;
-  document.getElementById('modalDenomTitle').textContent = `${denom.label} ${denom.sublabel}`;
+  document.getElementById('modalDenomTitle').textContent = `${denom.label} (${denom.sublabel})`;
   
   const countNum = parseInt(modalCurrentInput, 10) || 0;
   const total = countNum * denom.value;
-  document.getElementById('modalDenomSubtotal').textContent = `${countNum} × ${denom.label} = ${currencyFormatter.format(total)}`;
+  document.getElementById('modalDenomSubtotal').textContent = `${countNum} × ${denom.label} = ${formatCurrency(total)}`;
   document.getElementById('modalValueInput').value = modalCurrentInput;
 
   document.getElementById('modalPrevDenomBtn').style.opacity = activeModalDenomIndex > 0 ? '1' : '0.4';
@@ -447,7 +536,7 @@ function handleQuickAdd(amount) {
 }
 
 /* --------------------------------------------------------------------------
-   Summary Modal & Clipboard Export
+   Summary Modal
    -------------------------------------------------------------------------- */
 function openSummaryModal() {
   const summaryBody = document.getElementById('summaryBody');
@@ -463,12 +552,12 @@ function openSummaryModal() {
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
           <strong style="font-size:1rem; color: #fff;">${escapeHtml(pile.name)}</strong>
           <span style="font-family: var(--font-mono); font-weight:700; color: var(--accent-success); font-size:1.05rem;">
-            ${currencyFormatter.format(pileTotal)}
+            ${formatCurrency(pileTotal)}
           </span>
         </div>
         <table class="summary-table">
           <thead>
-            <tr><th>Nennwert</th><th>Anzahl</th><th style="text-align:right">Summe</th></tr>
+            <tr><th>Posten</th><th>Anzahl</th><th style="text-align:right">Summe</th></tr>
           </thead>
           <tbody>
     `;
@@ -482,7 +571,7 @@ function openSummaryModal() {
           <tr>
             <td>${denom.label}</td>
             <td>${count} Stk.</td>
-            <td class="align-right">${currencyFormatter.format(count * denom.value)}</td>
+            <td class="align-right">${formatCurrency(count * denom.value)}</td>
           </tr>
         `;
       }
@@ -498,19 +587,19 @@ function openSummaryModal() {
   html += `
     <div style="display:flex; justify-content:space-between; padding: 14px; background: rgba(59,130,246,0.15); border-radius: 12px; border: 1px solid rgba(59,130,246,0.3); margin-top: 6px;">
       <strong style="font-size: 1.1rem; color: #fff;">Gesamt (alle Stapel)</strong>
-      <strong style="font-family: var(--font-mono); font-size: 1.25rem; color: var(--accent-success);">${currencyFormatter.format(grandTotal)}</strong>
+      <strong style="font-family: var(--font-mono); font-size: 1.25rem; color: var(--accent-success);">${formatCurrency(grandTotal)}</strong>
     </div>
   `;
 
   summaryBody.innerHTML = html;
   document.getElementById('summaryModal').classList.add('open');
+  checkModalScrollLock();
 }
 
 function closeSummaryModal() {
   document.getElementById('summaryModal').classList.remove('open');
+  checkModalScrollLock();
 }
-
-
 
 function showToast(msg) {
   const toast = document.getElementById('toast');
@@ -552,6 +641,14 @@ function bindEvents() {
       return;
     }
 
+    // Category Collapse Header Click
+    const headerBtn = e.target.closest('.collapsable-header');
+    if (headerBtn) {
+      const cat = headerBtn.dataset.toggle;
+      if (cat) toggleCategory(cat);
+      return;
+    }
+
     // Direct Tap on denomination count or row tag to open keypad
     const countBtn = e.target.closest('.count-display-btn');
     const denomTag = e.target.closest('.denom-tag');
@@ -585,7 +682,6 @@ function bindEvents() {
   // Header and Action buttons
   document.getElementById('addPileBtn').addEventListener('click', addNewPile);
   document.getElementById('resetPileBtn').addEventListener('click', resetCurrentPile);
-  document.getElementById('summaryBtn').addEventListener('click', openSummaryModal);
   document.getElementById('viewBreakdownBtn').addEventListener('click', openSummaryModal);
   document.getElementById('closeSummaryModalBtn').addEventListener('click', closeSummaryModal);
   document.getElementById('closeSummaryBtn').addEventListener('click', closeSummaryModal);

@@ -21,7 +21,6 @@
   --accent-warning: #f59e0b;
   
   /* Denomination Realistic Tone Accents */
-  --denom-500: #8b5cf6; /* Violet */
   --denom-200: #eab308; /* Yellow/Gold */
   --denom-100: #10b981; /* Green */
   --denom-50:  #f97316; /* Orange */
@@ -32,6 +31,7 @@
   --coin-gold: #eab308;
   --coin-silver: #cbd5e1;
   --coin-bicolor: linear-gradient(135deg, #eab308 0%, #cbd5e1 100%);
+  --roll-accent: #a855f7; /* Purple accent for coin rolls */
   
   --border-subtle: rgba(255, 255, 255, 0.08);
   --border-focus: #3b82f6;
@@ -79,6 +79,7 @@ body {
   display: flex;
   flex-direction: column;
   position: relative;
+  overflow-x: hidden; /* Prevent horizontal overflow of the app container */
 }
 
 /* --------------------------------------------------------------------------
@@ -255,6 +256,7 @@ body {
   gap: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .pile-tab.active {
@@ -300,6 +302,7 @@ body {
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
+  flex-shrink: 0;
   transition: all 0.15s ease;
 }
 
@@ -309,26 +312,63 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   Denominations Grid
+   Denominations Grid & Collapsible Categories
    -------------------------------------------------------------------------- */
 .content-area {
   padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 .denom-section {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  background: rgba(30, 41, 59, 0.35);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  transition: all 0.2s ease;
+}
+
+.denom-section.collapsed {
+  padding: 8px 12px;
+  background: rgba(30, 41, 59, 0.2);
+}
+
+.denom-section.collapsed .denom-grid {
+  display: none;
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
-  padding: 0 4px;
+  align-items: center;
+  padding: 2px 4px;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.header-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.collapse-icon {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  transition: transform 0.2s ease;
+  display: inline-block;
+  user-select: none;
+}
+
+.denom-section.collapsed .collapse-icon {
+  transform: rotate(-90deg);
 }
 
 .section-header h2 {
@@ -352,24 +392,27 @@ body {
   gap: 8px;
 }
 
-/* Denomination Row Card */
+/* Denomination Row Card with Overflow Protection */
 .denom-row {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  padding: 10px 14px;
+  padding: 10px 12px;
   display: grid;
-  grid-template-columns: 85px 1fr 140px;
+  /* Columns: tag (flexible min), calc (shrinkable/flexible), stepper (fixed non-shrinkable) */
+  grid-template-columns: minmax(75px, auto) minmax(80px, 1fr) auto;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   transition: transform 0.1s ease, border-color 0.15s ease;
   position: relative;
   overflow: hidden;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .denom-row.has-count {
   border-color: rgba(59, 130, 246, 0.4);
-  background: linear-gradient(90deg, rgba(30, 41, 59, 0.9) 0%, rgba(38, 51, 77, 0.8) 100%);
+  background: linear-gradient(90deg, rgba(30, 41, 59, 0.95) 0%, rgba(38, 51, 77, 0.85) 100%);
 }
 
 .denom-row::before {
@@ -388,21 +431,19 @@ body {
   display: flex;
   flex-direction: column;
   cursor: pointer;
+  padding-left: 4px;
+  min-width: 0;
 }
 
 .denom-value {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 800;
   letter-spacing: -0.01em;
   color: var(--text-primary);
   display: flex;
   align-items: baseline;
   gap: 2px;
-}
-
-.denom-value .symbol {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
+  white-space: nowrap;
 }
 
 .denom-type {
@@ -410,25 +451,36 @@ body {
   color: var(--text-muted);
   text-transform: uppercase;
   font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Center subtotal value */
 .denom-calc {
   text-align: right;
-  padding-right: 6px;
+  padding-right: 4px;
   cursor: pointer;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .denom-row-sum {
   font-family: var(--font-mono);
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .denom-multiplier {
   font-size: 0.72rem;
   color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Right side steppers & tap quantity */
@@ -436,11 +488,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 6px;
+  gap: 4px;
+  flex-shrink: 0;
 }
 
 .step-btn {
-  width: 36px;
+  width: 34px;
   height: 36px;
   border-radius: var(--radius-sm);
   background: var(--bg-surface);
@@ -453,6 +506,7 @@ body {
   justify-content: center;
   cursor: pointer;
   transition: all 0.1s ease;
+  flex-shrink: 0;
 }
 
 .step-btn:active {
@@ -462,21 +516,26 @@ body {
 }
 
 .count-display-btn {
-  min-width: 50px;
+  min-width: 44px;
+  max-width: 68px;
   height: 36px;
-  padding: 0 8px;
+  padding: 0 6px;
   background: rgba(15, 23, 42, 0.7);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
   font-family: var(--font-mono);
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: border-color 0.15s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
 }
 
 .count-display-btn:active {
@@ -597,6 +656,11 @@ body {
   pointer-events: auto;
 }
 
+body.modal-open {
+  overflow: hidden !important;
+  touch-action: none;
+}
+
 .modal-card {
   width: 100%;
   max-width: 480px;
@@ -665,7 +729,13 @@ body {
 .modal-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
+  width: 100%;
+}
+
+.modal-header .close-btn {
+  margin-left: auto;
 }
 
 .modal-denom-badge {
