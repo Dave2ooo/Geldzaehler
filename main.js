@@ -283,8 +283,10 @@ function renderPileTabs() {
     const total = calculatePileTotal(pile);
 
     tabEl.innerHTML = `
-      <span class="tab-title">${escapeHtml(pile.name)}</span>
-      <span class="tab-badge">${formatCurrency(total)}</span>
+      <div class="tab-content">
+        <span class="tab-title">${escapeHtml(pile.name)}</span>
+        <span class="tab-badge">${formatCurrency(total)}</span>
+      </div>
       ${appState.piles.length > 1 ? `<span class="tab-close" data-remove="${pile.id}" title="Stapel löschen">&times;</span>` : ''}
     `;
 
