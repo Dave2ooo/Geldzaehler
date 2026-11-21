@@ -13,7 +13,8 @@ const DENOMINATIONS = [
   { id: 'b100', type: 'bill', category: 'bills', value: 100.0, label: '100 €', sublabel: 'Schein', color: 'var(--denom-100)' },
   { id: 'b200', type: 'bill', category: 'bills', value: 200.0, label: '200 €', sublabel: 'Schein', color: 'var(--denom-200)' },
   
-  // Coin Rolls: 1x2€ roll = 50€ (25 coins), 1x1€ roll = 25€ (25 coins), 1x50ct roll = 20€ (40 coins)
+  // Wechselgeld (5€ Schein, 2€ Rolle, 1€ Rolle, 50ct Rolle)
+  { id: 'w5',   type: 'bill', category: 'rolls', value: 5.0,   label: '5 €',        sublabel: 'Schein',               color: 'var(--denom-5)' },
   { id: 'r200', type: 'roll', category: 'rolls', value: 50.0,  label: '2 € Rolle',  sublabel: 'Wert: 50 € (25 Stk)',  color: 'var(--coin-bicolor)' },
   { id: 'r100', type: 'roll', category: 'rolls', value: 25.0,  label: '1 € Rolle',  sublabel: 'Wert: 25 € (25 Stk)',  color: 'var(--coin-bicolor)' },
   { id: 'r50',  type: 'roll', category: 'rolls', value: 20.0,  label: '50 ct Rolle', sublabel: 'Wert: 20 € (40 Stk)', color: 'var(--coin-gold)' },
@@ -255,9 +256,13 @@ function renderDenominationGrids() {
         <div class="denom-multiplier" id="mult-${denom.id}">0 × ${denom.label}</div>
       </div>
       <div class="stepper-control">
-        <button class="step-btn minus-btn" data-denom="${denom.id}" title="1 abziehen">−</button>
+        <button class="step-btn minus-btn" data-denom="${denom.id}" title="1 abziehen">
+          <svg class="ui-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></svg>
+        </button>
         <button class="count-display-btn" data-index="${index}" id="count-${denom.id}">0</button>
-        <button class="step-btn plus-btn" data-denom="${denom.id}" title="1 hinzufügen">+</button>
+        <button class="step-btn plus-btn" data-denom="${denom.id}" title="1 hinzufügen">
+          <svg class="ui-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+        </button>
       </div>
     `;
 

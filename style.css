@@ -109,8 +109,18 @@ body {
   gap: 8px;
 }
 
-.logo .icon {
-  font-size: 1.4rem;
+.logo-icon {
+  color: var(--accent-success);
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+.ui-icon {
+  display: inline-block;
+  vertical-align: middle;
+  stroke-width: 2;
+  flex-shrink: 0;
 }
 
 .logo h1 {
