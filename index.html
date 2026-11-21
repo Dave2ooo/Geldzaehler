@@ -1,223 +1,303 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#0f172a">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Geldzähler">
-  <title>Geldzähler • Cash Counter</title>
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="icon" type="image/png" href="icon-192.png">
-  <link rel="stylesheet" href="style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-</head>
-<body>
-  <div class="app-container">
-    <!-- Header with Top Stats -->
-    <header class="app-header">
-      <div class="header-top">
-        <div class="logo">
-          <span class="icon">💶</span>
-          <h1>Geldzähler</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="Geldzähler" />
+    <title>Geldzähler • Cash Counter</title>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" href="icon-192.png" />
+    <link rel="icon" type="image/png" href="icon-192.png" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Header with Top Stats -->
+      <header class="app-header">
+        <div class="header-top">
+          <div class="logo">
+            <span class="icon">💶</span>
+            <h1>Geldzähler</h1>
+          </div>
+          <div class="header-actions">
+            <button
+              id="resetPileBtn"
+              class="icon-btn danger-icon"
+              title="Aktuellen Stapel leeren"
+            >
+              🔄 <span class="btn-label">Leeren</span>
+            </button>
+          </div>
         </div>
-        <div class="header-actions">
-          <button id="resetPileBtn" class="icon-btn danger-icon" title="Aktuellen Stapel leeren">
-            🔄 <span class="btn-label">Leeren</span>
+
+        <!-- Grand Total Overview Banner -->
+        <div class="grand-total-banner">
+          <div class="total-col">
+            <span class="total-label">Aktueller Stapel</span>
+            <span class="total-amount" id="currentPileTotal">0,00 €</span>
+          </div>
+          <div class="total-divider"></div>
+          <div class="total-col">
+            <span class="total-label"
+              >Gesamtsumme (<span id="pileCountBadge">1</span>)</span
+            >
+            <span class="total-amount highlight" id="grandTotal">0,00 €</span>
+          </div>
+        </div>
+
+        <!-- Pile Tabs Bar -->
+        <nav class="piles-nav-wrapper">
+          <div class="piles-tabs" id="pilesTabs">
+            <!-- Dynamically populated pile tabs -->
+          </div>
+          <button
+            id="addPileBtn"
+            class="add-pile-btn"
+            title="Neuen Stapel hinzufügen"
+          >
+            <span>+ Stapel</span>
+          </button>
+        </nav>
+      </header>
+
+      <!-- Main Denomination Counter List -->
+      <main class="content-area">
+        <!-- Banknotes Section -->
+        <section class="denom-section" id="section-bills" data-category="bills">
+          <button
+            class="section-header collapsable-header"
+            data-toggle="bills"
+            type="button"
+            aria-expanded="true"
+          >
+            <div class="header-title-wrap">
+              <span class="collapse-icon">▼</span>
+              <h2>Scheine</h2>
+            </div>
+            <span class="section-subtotal" id="billsSubtotal">0,00 €</span>
+          </button>
+          <div class="denom-grid" id="billsGrid">
+            <!-- Populated by JS -->
+          </div>
+        </section>
+
+        <!-- Coin Rolls Section -->
+        <section class="denom-section" id="section-rolls" data-category="rolls">
+          <button
+            class="section-header collapsable-header"
+            data-toggle="rolls"
+            type="button"
+            aria-expanded="true"
+          >
+            <div class="header-title-wrap">
+              <span class="collapse-icon">▼</span>
+              <h2>Münzrollen</h2>
+            </div>
+            <span class="section-subtotal" id="rollsSubtotal">0,00 €</span>
+          </button>
+          <div class="denom-grid" id="rollsGrid">
+            <!-- Populated by JS -->
+          </div>
+        </section>
+
+        <!-- Coins Section -->
+        <section class="denom-section" id="section-coins" data-category="coins">
+          <button
+            class="section-header collapsable-header"
+            data-toggle="coins"
+            type="button"
+            aria-expanded="true"
+          >
+            <div class="header-title-wrap">
+              <span class="collapse-icon">▼</span>
+              <h2>Münzen (ab 10 Cent)</h2>
+            </div>
+            <span class="section-subtotal" id="coinsSubtotal">0,00 €</span>
+          </button>
+          <div class="denom-grid" id="coinsGrid">
+            <!-- Populated by JS -->
+          </div>
+        </section>
+      </main>
+
+      <!-- Sticky Bottom Bar for Mobile Quick Feedback -->
+      <footer class="sticky-footer">
+        <div class="footer-info">
+          <span class="pile-name-badge" id="footerPileName">Stapel 1</span>
+          <span class="footer-total" id="footerPileTotal">0,00 €</span>
+        </div>
+        <div class="footer-quick-actions">
+          <button id="viewBreakdownBtn" class="action-btn primary">
+            📊 Übersicht
+          </button>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Numpad & Quick Input Modal -->
+    <div
+      class="modal-backdrop"
+      id="inputModal"
+      role="dialog"
+      aria-hidden="true"
+    >
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-denom-badge" id="modalDenomBadge">50 €</div>
+          <div class="modal-title-group">
+            <h3 id="modalDenomTitle">50 € Schein</h3>
+            <span id="modalDenomSubtotal">0 × 50 € = 0,00 €</span>
+          </div>
+          <button class="close-btn" id="closeModalBtn">&times;</button>
+        </div>
+
+        <div class="modal-display">
+          <input
+            type="text"
+            id="modalValueInput"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            value="0"
+            readonly
+          />
+          <span class="unit-label">Stück</span>
+        </div>
+
+        <!-- Quick increment buttons -->
+        <div class="quick-add-row">
+          <button class="quick-chip" data-add="1">+1</button>
+          <button class="quick-chip" data-add="5">+5</button>
+          <button class="quick-chip" data-add="10">+10</button>
+          <button class="quick-chip" data-add="20">+20</button>
+          <button class="quick-chip" data-add="50">+50</button>
+        </div>
+
+        <!-- Numeric keypad -->
+        <div class="numpad-grid">
+          <button class="num-key" data-key="1">1</button>
+          <button class="num-key" data-key="2">2</button>
+          <button class="num-key" data-key="3">3</button>
+          <button class="num-key" data-key="4">4</button>
+          <button class="num-key" data-key="5">5</button>
+          <button class="num-key" data-key="6">6</button>
+          <button class="num-key" data-key="7">7</button>
+          <button class="num-key" data-key="8">8</button>
+          <button class="num-key" data-key="9">9</button>
+          <button class="num-key action-clear" data-key="clear">C</button>
+          <button class="num-key" data-key="0">0</button>
+          <button class="num-key action-back" data-key="back">⌫</button>
+        </div>
+
+        <div class="modal-footer-btns">
+          <button id="modalPrevDenomBtn" class="nav-step-btn">
+            ‹ Vorherige
+          </button>
+          <button id="modalConfirmBtn" class="confirm-btn">Fertig</button>
+          <button id="modalNextDenomBtn" class="nav-step-btn">Nächste ›</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom Prompt/Rename Dialog Modal (Replaces native browser prompt) -->
+    <div
+      class="modal-backdrop"
+      id="promptModal"
+      role="dialog"
+      aria-hidden="true"
+    >
+      <div class="modal-card dialog-card">
+        <div class="modal-header">
+          <h3 id="promptTitle">Stapel benennen</h3>
+          <button class="close-btn" id="closePromptBtn">&times;</button>
+        </div>
+        <div class="dialog-body">
+          <input
+            type="text"
+            id="promptInput"
+            class="dialog-text-input"
+            placeholder="Name eingeben..."
+          />
+        </div>
+        <div class="dialog-actions">
+          <button id="cancelPromptBtn" class="action-btn secondary">
+            Abbrechen
+          </button>
+          <button id="confirmPromptBtn" class="action-btn primary">
+            Speichern
           </button>
         </div>
       </div>
+    </div>
 
-      <!-- Grand Total Overview Banner -->
-      <div class="grand-total-banner">
-        <div class="total-col">
-          <span class="total-label">Aktueller Stapel</span>
-          <span class="total-amount" id="currentPileTotal">0,00 €</span>
+    <!-- Custom Confirmation Dialog Modal (Replaces native browser confirm) -->
+    <div
+      class="modal-backdrop"
+      id="confirmModal"
+      role="dialog"
+      aria-hidden="true"
+    >
+      <div class="modal-card dialog-card">
+        <div class="modal-header">
+          <h3 id="confirmTitle">Bestätigung</h3>
+          <button class="close-btn" id="closeConfirmBtn">&times;</button>
         </div>
-        <div class="total-divider"></div>
-        <div class="total-col">
-          <span class="total-label">Gesamtsumme (<span id="pileCountBadge">1</span>)</span>
-          <span class="total-amount highlight" id="grandTotal">0,00 €</span>
+        <div class="dialog-body">
+          <p id="confirmMessage" class="dialog-message">
+            Möchtest du diese Aktion ausführen?
+          </p>
         </div>
-      </div>
-
-      <!-- Pile Tabs Bar -->
-      <nav class="piles-nav-wrapper">
-        <div class="piles-tabs" id="pilesTabs">
-          <!-- Dynamically populated pile tabs -->
+        <div class="dialog-actions">
+          <button id="cancelConfirmBtn" class="action-btn secondary">
+            Abbrechen
+          </button>
+          <button id="okConfirmBtn" class="action-btn danger">
+            Ja, leeren
+          </button>
         </div>
-        <button id="addPileBtn" class="add-pile-btn" title="Neuen Stapel hinzufügen">
-          <span>+ Stapel</span>
-        </button>
-      </nav>
-    </header>
-
-    <!-- Main Denomination Counter List -->
-    <main class="content-area">
-      <!-- Banknotes Section -->
-      <section class="denom-section" id="section-bills" data-category="bills">
-        <button class="section-header collapsable-header" data-toggle="bills" type="button" aria-expanded="true">
-          <div class="header-title-wrap">
-            <span class="collapse-icon">▼</span>
-            <h2>Banknoten / Scheine</h2>
-          </div>
-          <span class="section-subtotal" id="billsSubtotal">0,00 €</span>
-        </button>
-        <div class="denom-grid" id="billsGrid">
-          <!-- Populated by JS -->
-        </div>
-      </section>
-
-      <!-- Coin Rolls Section -->
-      <section class="denom-section" id="section-rolls" data-category="rolls">
-        <button class="section-header collapsable-header" data-toggle="rolls" type="button" aria-expanded="true">
-          <div class="header-title-wrap">
-            <span class="collapse-icon">▼</span>
-            <h2>Münzrollen</h2>
-          </div>
-          <span class="section-subtotal" id="rollsSubtotal">0,00 €</span>
-        </button>
-        <div class="denom-grid" id="rollsGrid">
-          <!-- Populated by JS -->
-        </div>
-      </section>
-
-      <!-- Coins Section -->
-      <section class="denom-section" id="section-coins" data-category="coins">
-        <button class="section-header collapsable-header" data-toggle="coins" type="button" aria-expanded="true">
-          <div class="header-title-wrap">
-            <span class="collapse-icon">▼</span>
-            <h2>Münzen (ab 10 Cent)</h2>
-          </div>
-          <span class="section-subtotal" id="coinsSubtotal">0,00 €</span>
-        </button>
-        <div class="denom-grid" id="coinsGrid">
-          <!-- Populated by JS -->
-        </div>
-      </section>
-    </main>
-
-    <!-- Sticky Bottom Bar for Mobile Quick Feedback -->
-    <footer class="sticky-footer">
-      <div class="footer-info">
-        <span class="pile-name-badge" id="footerPileName">Stapel 1</span>
-        <span class="footer-total" id="footerPileTotal">0,00 €</span>
-      </div>
-      <div class="footer-quick-actions">
-        <button id="viewBreakdownBtn" class="action-btn primary">
-          📊 Übersicht
-        </button>
-      </div>
-    </footer>
-  </div>
-
-  <!-- Numpad & Quick Input Modal -->
-  <div class="modal-backdrop" id="inputModal" role="dialog" aria-hidden="true">
-    <div class="modal-card">
-      <div class="modal-header">
-        <div class="modal-denom-badge" id="modalDenomBadge">50 €</div>
-        <div class="modal-title-group">
-          <h3 id="modalDenomTitle">50 € Schein</h3>
-          <span id="modalDenomSubtotal">0 × 50 € = 0,00 €</span>
-        </div>
-        <button class="close-btn" id="closeModalBtn">&times;</button>
-      </div>
-
-      <div class="modal-display">
-        <input type="text" id="modalValueInput" inputmode="numeric" pattern="[0-9]*" value="0" readonly>
-        <span class="unit-label">Stück</span>
-      </div>
-
-      <!-- Quick increment buttons -->
-      <div class="quick-add-row">
-        <button class="quick-chip" data-add="1">+1</button>
-        <button class="quick-chip" data-add="5">+5</button>
-        <button class="quick-chip" data-add="10">+10</button>
-        <button class="quick-chip" data-add="20">+20</button>
-        <button class="quick-chip" data-add="50">+50</button>
-      </div>
-
-      <!-- Numeric keypad -->
-      <div class="numpad-grid">
-        <button class="num-key" data-key="1">1</button>
-        <button class="num-key" data-key="2">2</button>
-        <button class="num-key" data-key="3">3</button>
-        <button class="num-key" data-key="4">4</button>
-        <button class="num-key" data-key="5">5</button>
-        <button class="num-key" data-key="6">6</button>
-        <button class="num-key" data-key="7">7</button>
-        <button class="num-key" data-key="8">8</button>
-        <button class="num-key" data-key="9">9</button>
-        <button class="num-key action-clear" data-key="clear">C</button>
-        <button class="num-key" data-key="0">0</button>
-        <button class="num-key action-back" data-key="back">⌫</button>
-      </div>
-
-      <div class="modal-footer-btns">
-        <button id="modalPrevDenomBtn" class="nav-step-btn">‹ Vorherige</button>
-        <button id="modalConfirmBtn" class="confirm-btn">Fertig</button>
-        <button id="modalNextDenomBtn" class="nav-step-btn">Nächste ›</button>
       </div>
     </div>
-  </div>
 
-  <!-- Custom Prompt/Rename Dialog Modal (Replaces native browser prompt) -->
-  <div class="modal-backdrop" id="promptModal" role="dialog" aria-hidden="true">
-    <div class="modal-card dialog-card">
-      <div class="modal-header">
-        <h3 id="promptTitle">Stapel benennen</h3>
-        <button class="close-btn" id="closePromptBtn">&times;</button>
-      </div>
-      <div class="dialog-body">
-        <input type="text" id="promptInput" class="dialog-text-input" placeholder="Name eingeben...">
-      </div>
-      <div class="dialog-actions">
-        <button id="cancelPromptBtn" class="action-btn secondary">Abbrechen</button>
-        <button id="confirmPromptBtn" class="action-btn primary">Speichern</button>
+    <!-- Full Summary & Breakdown Modal -->
+    <div
+      class="modal-backdrop"
+      id="summaryModal"
+      role="dialog"
+      aria-hidden="true"
+    >
+      <div class="modal-card summary-card">
+        <div class="modal-header">
+          <h3>📊 Gesamtabrechnung</h3>
+          <button class="close-btn" id="closeSummaryModalBtn">&times;</button>
+        </div>
+        <div class="summary-body" id="summaryBody">
+          <!-- Rendered breakdown table & piles -->
+        </div>
+        <div class="summary-actions">
+          <button id="closeSummaryBtn" class="action-btn primary">
+            Schließen
+          </button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Custom Confirmation Dialog Modal (Replaces native browser confirm) -->
-  <div class="modal-backdrop" id="confirmModal" role="dialog" aria-hidden="true">
-    <div class="modal-card dialog-card">
-      <div class="modal-header">
-        <h3 id="confirmTitle">Bestätigung</h3>
-        <button class="close-btn" id="closeConfirmBtn">&times;</button>
-      </div>
-      <div class="dialog-body">
-        <p id="confirmMessage" class="dialog-message">Möchtest du diese Aktion ausführen?</p>
-      </div>
-      <div class="dialog-actions">
-        <button id="cancelConfirmBtn" class="action-btn secondary">Abbrechen</button>
-        <button id="okConfirmBtn" class="action-btn danger">Ja, leeren</button>
-      </div>
-    </div>
-  </div>
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">Kopiert!</div>
 
-  <!-- Full Summary & Breakdown Modal -->
-  <div class="modal-backdrop" id="summaryModal" role="dialog" aria-hidden="true">
-    <div class="modal-card summary-card">
-      <div class="modal-header">
-        <h3>📊 Gesamtabrechnung</h3>
-        <button class="close-btn" id="closeSummaryModalBtn">&times;</button>
-      </div>
-      <div class="summary-body" id="summaryBody">
-        <!-- Rendered breakdown table & piles -->
-      </div>
-      <div class="summary-actions">
-        <button id="closeSummaryBtn" class="action-btn primary">Schließen</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Toast Notification -->
-  <div id="toast" class="toast">Kopiert!</div>
-
-  <script src="main.js"></script>
-</body>
+    <script src="main.js"></script>
+  </body>
 </html>

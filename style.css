@@ -335,20 +335,20 @@ body {
    Denominations Grid & Collapsible Categories
    -------------------------------------------------------------------------- */
 .content-area {
-  padding: 16px;
+  padding: 12px 10px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
 .denom-section {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   background: rgba(30, 41, 59, 0.35);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  padding: 10px 12px;
+  padding: 8px 8px;
   transition: all 0.2s ease;
 }
 
@@ -417,12 +417,13 @@ body {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  padding: 10px 12px;
+  padding: 10px 8px;
   display: grid;
-  /* Columns: tag (flexible min), calc (shrinkable/flexible), stepper (fixed non-shrinkable) */
-  grid-template-columns: minmax(75px, auto) minmax(80px, 1fr) auto;
+  /* Columns: tag (auto), calc (flexible), stepper (auto fixed) */
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: 8px;
+  column-gap: 4px;
+  row-gap: 4px;
   transition: transform 0.1s ease, border-color 0.15s ease;
   position: relative;
   overflow: hidden;
@@ -441,7 +442,7 @@ body {
   left: 0;
   top: 0;
   bottom: 0;
-  width: 5px;
+  width: 4px;
   background: var(--denom-color, #64748b);
   border-radius: 4px 0 0 4px;
 }
@@ -451,12 +452,13 @@ body {
   display: flex;
   flex-direction: column;
   cursor: pointer;
-  padding-left: 4px;
-  min-width: 0;
+  padding-left: 6px;
+  padding-right: 2px;
+  flex-shrink: 0;
 }
 
 .denom-value {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 800;
   letter-spacing: -0.01em;
   color: var(--text-primary);
@@ -467,7 +469,7 @@ body {
 }
 
 .denom-type {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   color: var(--text-muted);
   text-transform: uppercase;
   font-weight: 600;
@@ -480,6 +482,7 @@ body {
 .denom-calc {
   text-align: right;
   padding-right: 4px;
+  padding-left: 2px;
   cursor: pointer;
   min-width: 0;
   overflow: hidden;
@@ -487,7 +490,7 @@ body {
 
 .denom-row-sum {
   font-family: var(--font-mono);
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: var(--text-primary);
   white-space: nowrap;
@@ -496,7 +499,7 @@ body {
 }
 
 .denom-multiplier {
-  font-size: 0.72rem;
+  font-size: 0.70rem;
   color: var(--text-secondary);
   white-space: nowrap;
   overflow: hidden;
@@ -508,18 +511,18 @@ body {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 4px;
+  gap: 3px;
   flex-shrink: 0;
 }
 
 .step-btn {
-  width: 34px;
-  height: 36px;
+  width: 32px;
+  height: 34px;
   border-radius: var(--radius-sm);
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   color: var(--text-primary);
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -536,16 +539,16 @@ body {
 }
 
 .count-display-btn {
-  min-width: 44px;
-  max-width: 68px;
-  height: 36px;
-  padding: 0 6px;
+  min-width: 38px;
+  max-width: 60px;
+  height: 34px;
+  padding: 0 4px;
   background: rgba(15, 23, 42, 0.7);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
   font-family: var(--font-mono);
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-weight: 700;
   display: flex;
   align-items: center;

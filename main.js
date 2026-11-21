@@ -5,13 +5,13 @@
 
 // Denominations configuration
 const DENOMINATIONS = [
-  // Banknotes (500€ removed)
-  { id: 'b200', type: 'bill', category: 'bills', value: 200.0, label: '200 €', sublabel: 'Schein', color: 'var(--denom-200)' },
-  { id: 'b100', type: 'bill', category: 'bills', value: 100.0, label: '100 €', sublabel: 'Schein', color: 'var(--denom-100)' },
-  { id: 'b50',  type: 'bill', category: 'bills', value: 50.0,  label: '50 €',  sublabel: 'Schein', color: 'var(--denom-50)' },
-  { id: 'b20',  type: 'bill', category: 'bills', value: 20.0,  label: '20 €',  sublabel: 'Schein', color: 'var(--denom-20)' },
-  { id: 'b10',  type: 'bill', category: 'bills', value: 10.0,  label: '10 €',  sublabel: 'Schein', color: 'var(--denom-10)' },
+  // Banknotes (5€ up to 200€)
   { id: 'b5',   type: 'bill', category: 'bills', value: 5.0,   label: '5 €',   sublabel: 'Schein', color: 'var(--denom-5)' },
+  { id: 'b10',  type: 'bill', category: 'bills', value: 10.0,  label: '10 €',  sublabel: 'Schein', color: 'var(--denom-10)' },
+  { id: 'b20',  type: 'bill', category: 'bills', value: 20.0,  label: '20 €',  sublabel: 'Schein', color: 'var(--denom-20)' },
+  { id: 'b50',  type: 'bill', category: 'bills', value: 50.0,  label: '50 €',  sublabel: 'Schein', color: 'var(--denom-50)' },
+  { id: 'b100', type: 'bill', category: 'bills', value: 100.0, label: '100 €', sublabel: 'Schein', color: 'var(--denom-100)' },
+  { id: 'b200', type: 'bill', category: 'bills', value: 200.0, label: '200 €', sublabel: 'Schein', color: 'var(--denom-200)' },
   
   // Coin Rolls: 1x2€ roll = 50€ (25 coins), 1x1€ roll = 25€ (25 coins), 1x50ct roll = 20€ (40 coins)
   { id: 'r200', type: 'roll', category: 'rolls', value: 50.0,  label: '2 € Rolle',  sublabel: 'Wert: 50 € (25 Stk)',  color: 'var(--coin-bicolor)' },
