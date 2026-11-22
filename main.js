@@ -5,26 +5,24 @@
 
 // Denominations configuration
 const DENOMINATIONS = [
-  // Banknotes (5€ up to 200€)
-  { id: 'b5',   type: 'bill', category: 'bills', value: 5.0,   label: '5 €',   sublabel: 'Schein', color: 'var(--denom-5)' },
-  { id: 'b10',  type: 'bill', category: 'bills', value: 10.0,  label: '10 €',  sublabel: 'Schein', color: 'var(--denom-10)' },
-  { id: 'b20',  type: 'bill', category: 'bills', value: 20.0,  label: '20 €',  sublabel: 'Schein', color: 'var(--denom-20)' },
-  { id: 'b50',  type: 'bill', category: 'bills', value: 50.0,  label: '50 €',  sublabel: 'Schein', color: 'var(--denom-50)' },
-  { id: 'b100', type: 'bill', category: 'bills', value: 100.0, label: '100 €', sublabel: 'Schein', color: 'var(--denom-100)' },
-  { id: 'b200', type: 'bill', category: 'bills', value: 200.0, label: '200 €', sublabel: 'Schein', color: 'var(--denom-200)' },
+  // Scheine & Münzen (5€ bis 200€ Scheine, dann 2€ bis 10ct Münzen)
+  { id: 'b5',   type: 'bill', category: 'cash',  value: 5.0,   label: '5 €',   sublabel: 'Schein', color: 'var(--denom-5)' },
+  { id: 'b10',  type: 'bill', category: 'cash',  value: 10.0,  label: '10 €',  sublabel: 'Schein', color: 'var(--denom-10)' },
+  { id: 'b20',  type: 'bill', category: 'cash',  value: 20.0,  label: '20 €',  sublabel: 'Schein', color: 'var(--denom-20)' },
+  { id: 'b50',  type: 'bill', category: 'cash',  value: 50.0,  label: '50 €',  sublabel: 'Schein', color: 'var(--denom-50)' },
+  { id: 'b100', type: 'bill', category: 'cash',  value: 100.0, label: '100 €', sublabel: 'Schein', color: 'var(--denom-100)' },
+  { id: 'b200', type: 'bill', category: 'cash',  value: 200.0, label: '200 €', sublabel: 'Schein', color: 'var(--denom-200)' },
+  { id: 'c200', type: 'coin', category: 'cash',  value: 2.0,   label: '2 €',   sublabel: 'Münze',  color: 'var(--coin-bicolor)' },
+  { id: 'c100', type: 'coin', category: 'cash',  value: 1.0,   label: '1 €',   sublabel: 'Münze',  color: 'var(--coin-bicolor)' },
+  { id: 'c50',  type: 'coin', category: 'cash',  value: 0.50,  label: '50 ct', sublabel: 'Münze',  color: 'var(--coin-gold)' },
+  { id: 'c20',  type: 'coin', category: 'cash',  value: 0.20,  label: '20 ct', sublabel: 'Münze',  color: 'var(--coin-gold)' },
+  { id: 'c10',  type: 'coin', category: 'cash',  value: 0.10,  label: '10 ct', sublabel: 'Münze',  color: 'var(--coin-gold)' },
   
   // Wechselgeld (5€ Schein, 2€ Rolle, 1€ Rolle, 50ct Rolle)
   { id: 'w5',   type: 'bill', category: 'rolls', value: 5.0,   label: '5 €',        sublabel: 'Schein',               color: 'var(--denom-5)' },
   { id: 'r200', type: 'roll', category: 'rolls', value: 50.0,  label: '2 € Rolle',  sublabel: 'Wert: 50 € (25 Stk)',  color: 'var(--coin-bicolor)' },
   { id: 'r100', type: 'roll', category: 'rolls', value: 25.0,  label: '1 € Rolle',  sublabel: 'Wert: 25 € (25 Stk)',  color: 'var(--coin-bicolor)' },
-  { id: 'r50',  type: 'roll', category: 'rolls', value: 20.0,  label: '50 ct Rolle', sublabel: 'Wert: 20 € (40 Stk)', color: 'var(--coin-gold)' },
-
-  // Loose Coins (down to 10 cents)
-  { id: 'c200', type: 'coin', category: 'coins', value: 2.0,   label: '2 €',   sublabel: 'Münze',  color: 'var(--coin-bicolor)' },
-  { id: 'c100', type: 'coin', category: 'coins', value: 1.0,   label: '1 €',   sublabel: 'Münze',  color: 'var(--coin-bicolor)' },
-  { id: 'c50',  type: 'coin', category: 'coins', value: 0.50,  label: '50 ct', sublabel: 'Münze',  color: 'var(--coin-gold)' },
-  { id: 'c20',  type: 'coin', category: 'coins', value: 0.20,  label: '20 ct', sublabel: 'Münze',  color: 'var(--coin-gold)' },
-  { id: 'c10',  type: 'coin', category: 'coins', value: 0.10,  label: '10 ct', sublabel: 'Münze',  color: 'var(--coin-gold)' }
+  { id: 'r50',  type: 'roll', category: 'rolls', value: 20.0,  label: '50 ct Rolle', sublabel: 'Wert: 20 € (40 Stk)', color: 'var(--coin-gold)' }
 ];
 
 const STORAGE_KEY = 'cash_counter_piles_data_v2';
@@ -210,7 +208,7 @@ function applyCategoryCollapseState() {
   const pile = getActivePile();
   const collapsed = pile.collapsedCategories || {};
 
-  ['bills', 'rolls', 'coins'].forEach(cat => {
+  ['cash', 'rolls'].forEach(cat => {
     const section = document.getElementById(`section-${cat}`);
     const headerBtn = section ? section.querySelector('.collapsable-header') : null;
     const isCollapsed = !!collapsed[cat];
@@ -232,13 +230,11 @@ function applyCategoryCollapseState() {
    DOM Rendering
    -------------------------------------------------------------------------- */
 function renderDenominationGrids() {
-  const billsContainer = document.getElementById('billsGrid');
+  const cashContainer = document.getElementById('cashGrid');
   const rollsContainer = document.getElementById('rollsGrid');
-  const coinsContainer = document.getElementById('coinsGrid');
 
-  billsContainer.innerHTML = '';
-  rollsContainer.innerHTML = '';
-  coinsContainer.innerHTML = '';
+  if (cashContainer) cashContainer.innerHTML = '';
+  if (rollsContainer) rollsContainer.innerHTML = '';
 
   DENOMINATIONS.forEach((denom, index) => {
     const rowEl = document.createElement('div');
@@ -266,12 +262,10 @@ function renderDenominationGrids() {
       </div>
     `;
 
-    if (denom.category === 'bills') {
-      billsContainer.appendChild(rowEl);
+    if (denom.category === 'cash') {
+      if (cashContainer) cashContainer.appendChild(rowEl);
     } else if (denom.category === 'rolls') {
-      rollsContainer.appendChild(rowEl);
-    } else {
-      coinsContainer.appendChild(rowEl);
+      if (rollsContainer) rollsContainer.appendChild(rowEl);
     }
   });
 }
@@ -323,9 +317,8 @@ function calculatePileTotal(pile) {
 function updateCalculations() {
   const currentPile = getActivePile();
   let currentPileSum = 0;
-  let billsSubtotal = 0;
+  let cashSubtotal = 0;
   let rollsSubtotal = 0;
-  let coinsSubtotal = 0;
 
   // Update each denomination row
   DENOMINATIONS.forEach(denom => {
@@ -333,9 +326,8 @@ function updateCalculations() {
     const lineTotal = count * denom.value;
     currentPileSum += lineTotal;
 
-    if (denom.category === 'bills') billsSubtotal += lineTotal;
+    if (denom.category === 'cash') cashSubtotal += lineTotal;
     else if (denom.category === 'rolls') rollsSubtotal += lineTotal;
-    else coinsSubtotal += lineTotal;
 
     // Update row DOM
     const countBtn = document.getElementById(`count-${denom.id}`);
@@ -360,9 +352,11 @@ function updateCalculations() {
   });
 
   // Update headers and footers
-  document.getElementById('billsSubtotal').textContent = formatCurrency(billsSubtotal);
-  document.getElementById('rollsSubtotal').textContent = formatCurrency(rollsSubtotal);
-  document.getElementById('coinsSubtotal').textContent = formatCurrency(coinsSubtotal);
+  const cashSubtotalEl = document.getElementById('cashSubtotal');
+  const rollsSubtotalEl = document.getElementById('rollsSubtotal');
+  if (cashSubtotalEl) cashSubtotalEl.textContent = formatCurrency(cashSubtotal);
+  if (rollsSubtotalEl) rollsSubtotalEl.textContent = formatCurrency(rollsSubtotal);
+
   document.getElementById('currentPileTotal').textContent = formatCurrency(currentPileSum);
   document.getElementById('grandTotal').textContent = formatCurrency(grandTotal);
 

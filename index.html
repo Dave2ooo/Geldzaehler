@@ -113,26 +113,26 @@
 
       <!-- Main Denomination Counter List -->
       <main class="content-area">
-        <!-- Banknotes Section -->
-        <section class="denom-section" id="section-bills" data-category="bills">
+        <!-- Scheine & Münzen Section -->
+        <section class="denom-section" id="section-cash" data-category="cash">
           <button
             class="section-header collapsable-header"
-            data-toggle="bills"
+            data-toggle="cash"
             type="button"
             aria-expanded="true"
           >
             <div class="header-title-wrap">
               <span class="collapse-icon">▼</span>
-              <h2>Scheine</h2>
+              <h2>Scheine &amp; Münzen</h2>
             </div>
-            <span class="section-subtotal" id="billsSubtotal">0,00 €</span>
+            <span class="section-subtotal" id="cashSubtotal">0,00 €</span>
           </button>
-          <div class="denom-grid" id="billsGrid">
+          <div class="denom-grid" id="cashGrid">
             <!-- Populated by JS -->
           </div>
         </section>
 
-        <!-- Coin Rolls Section -->
+        <!-- Wechselgeld Section -->
         <section class="denom-section" id="section-rolls" data-category="rolls">
           <button
             class="section-header collapsable-header"
@@ -147,25 +147,6 @@
             <span class="section-subtotal" id="rollsSubtotal">0,00 €</span>
           </button>
           <div class="denom-grid" id="rollsGrid">
-            <!-- Populated by JS -->
-          </div>
-        </section>
-
-        <!-- Coins Section -->
-        <section class="denom-section" id="section-coins" data-category="coins">
-          <button
-            class="section-header collapsable-header"
-            data-toggle="coins"
-            type="button"
-            aria-expanded="true"
-          >
-            <div class="header-title-wrap">
-              <span class="collapse-icon">▼</span>
-              <h2>Münzen</h2>
-            </div>
-            <span class="section-subtotal" id="coinsSubtotal">0,00 €</span>
-          </button>
-          <div class="denom-grid" id="coinsGrid">
             <!-- Populated by JS -->
           </div>
         </section>
